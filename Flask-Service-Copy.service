@@ -1,18 +1,13 @@
 [Unit]
-
 Description = Python API Service
 After = network.target
 
 [Service]
-
 User = sebastian
 Group = sebastian
 WorkingDirectory = /home/sebastian/CPSC222/
 ExecStart = /usr/bin/python3 /home/sebastian/CPSC222/API.py
-Description = Python API Service
-After = network.target
+Restart = always
 
 [Install]
-
 WantedBy = multi-user.target
-Restart = always
