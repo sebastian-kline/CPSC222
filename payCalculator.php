@@ -16,24 +16,26 @@ $stateWithholding = $grossPay * $stateTaxRate;
 $totalDeductions = $federalWithholding + $stateWithholding;
 $netPay = $grossPay - $totalDeductions;
 
+$annualPay = $grossPay * 52; //52 weeks in a year
+
 //federal tax bracket
 $federalTaxBracket = "";
-if ($grossPay <= 11600) {
+if ($annualPay <= 11600) {
 	$federalTaxBracket = "10%";	
 }
-elseif($grossPay >= 11601 && $grossPay <= 47150) {
+elseif($annualPay >= 11601 && $annualPay <= 47150) {
 	$federalTaxBracket = "12%";
 }
-elseif($grossPay >= 47151 && $grossPay <= 100525) {
+elseif($annualPay >= 47151 && $annualPay <= 100525) {
 	$federalTaxBracket = "22%";
 }
-elseif($grossPay >= 100526 && $grossPay <= 191950) {
+elseif($annualPay >= 100526 && $annualPay <= 191950) {
 	$federalTaxBracket = "24%";
 }
-elseif($grossPay >= 191951 && $grossPay <= 243725) {	
+elseif($annualPay >= 191951 && $annualPay <= 243725) {	
 	$federalTaxBracket = "32%";
 }
-elseif($grossPay >== 243726 && $grossPay <= 609350) {
+elseif($annualPay >= 243726 && $annualPay <= 609350) {
 	$federalTaxBracket = "35%";
 }
 else {
@@ -43,11 +45,11 @@ else {
 //output
 echo "<table>";
 echo "<tr><th>Employee Name</th><td>$employeeName</td></tr>";
-echo "<tr><th>Hours Worked</th><td>$hoursWorked</td></tr>;";
+echo "<tr><th>Hours Worked</th><td>$hoursWorked</td></tr>";
 echo "<tr><th>Pay Rate</th><td>\$$payRate</td></tr>";
 echo "<tr><th>Gross Pay</th><td>\$$grossPay</td></tr>";
-echo "<tr><th>Federal Withholding(24.5%)</th><td>\$$federalWithholding</td></tr>";
-echo "<tr>State Withholding (5.5%)<th></th><td>\$$stateWithholding</td></tr>";
+echo "<tr><th>Federal Withholding (24.5%)</th><td>\$$federalWithholding</td></tr>";
+echo "<tr><th>State Withholding (5.5%)</th><td>\$$stateWithholding</td></tr>";
 echo "<tr><th>Total Deductions</th><td>\$$totalDeductions</td></tr>";
 echo "<tr><th>Net Pay</th><td>\$$netPay</td></tr>";
 echo "<tr><th>Federal Tax Bracket</th><td>$federalTaxBracket</td></tr>";
