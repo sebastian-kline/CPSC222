@@ -18,6 +18,15 @@ $netPay = $grossPay - $totalDeductions;
 
 $annualPay = $grossPay * 52; //52 weeks in a year
 
+//number formatting
+$hoursWorked = number_format($hoursWorked, 2);
+$payRate = number_format($payRate, 2);
+$grossPay = number_format($grossPay, 2);
+$federalWithholding = number_format($federalWithholding, 2);
+$stateWithholding = number_format($stateWithholding, 2);
+$totalDeductions = number_format($totalDeductions, 2);
+$netPay = number_format($netPay, 2);
+
 //federal tax bracket
 $federalTaxBracket = "";
 if ($annualPay <= 11600) {
