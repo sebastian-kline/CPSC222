@@ -15,6 +15,18 @@ function sanitizeInput($data) {
 	return $data;
 }
 
+function getSuffix($number) {
+	if ($number % 100 >= 11 && $number % 100 <= 13) {
+		return 'th';
+	}
+	switch ($number % 10) {
+		case 1: return 'st';
+		case 2: return 'nd';
+		case 3: return 'rd';
+		default: return 'th';
+	}
+}
+
 //Formater
 function formatBirthday($month, $day, $year, $hour, $minute, $ampm) {
 	$time_format = "H:i";
@@ -23,9 +35,12 @@ function formatBirthday($month, $day, $year, $hour, $minute, $ampm) {
 	} elseif ($ampm == "AM" && $hour == 12) {
 		$hour = 0;
 	}
+
+	$day_suffix = getSuffix($day);
+
 	$birthday_time = sprintf("%04d-%02d-%02d %02d:%02d", $year, $month, $day, $hour, $minute);
 	$date = new DateTime($birthday_time);
-	return $date->format('F j, Y - h:i A');
+	return $date->format('F jS, Y - g:ia');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -46,8 +61,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	//Display
 	echo "<p>$weekday $pretty_birthday</p>";
 
+	$iso_birthday = str_replace("-", "", $pretty_birthday);
+
 	//ISO Link
-	echo "<p><a href='?formatted_date=".urlencode($pretty_birthday)."&format=iso'>Show date in ISO format</a></p>";
+	echo "<p><a href='?formatted_date=".urlencode($iso_birthday)."&format=iso'>Show date in ISO format</a></p>";
 } elseif (isset($_GET["formatted_date"])) {
 	//URL Parameter
 	$user_birthday = sanitizeInput($_GET["formatted_date"]);
@@ -66,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<table border="1">
 			<tr>
 				<th>Month</th>
-				<th>Date</th>
+				<th>Day</th>
 				<th>Year</th>
 				<th>Hour</th>
 				<th>Minute</th>
