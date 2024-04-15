@@ -23,11 +23,11 @@ function formatBirthday($month, $day, $year, $hour, $minute, $ampm) {
 		$hour = 0;
 	}
 	$birthday_time = sprintf("%04d-%02d-%02d %02d:%02d", $year, $month, $day, $hour, $minute);
-	$data = new DateTime($birthday_time);
+	$date = new DateTime($birthday_time);
 	return $date->format('F j, Y h:i A');
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	//Saniter
 	$user_month = sanitizeInput($_POST["month"]);
 	$user_day = sanitizeInput($_POST["day"]);
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" {
 	echo "<p>$pretty_birthday</p>";
 
 	//ISO Link
-	echo "<p><a href='?birthday=$pretty_birthday'>Show date in ISO format</a></p>";
+	echo "<p><a href='?birthday=".urlencode($pretty_birthda)."'>Show date in ISO format</a></p>";
 } elseif (isset($_GET["birthday"])) {
 	//URL Parameter
 	$user_birthday = sanitizeInput($_GET["birthday"]);
@@ -51,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" {
 	//Display
 	echo "<p>$user_birthday</p>";
 } else {
-	//Display Form
 	echo "<form method='post' action='".htmlspecialchars($_SERVER["PHP_SELF"])."'>
 		<table>
 			<tr>
@@ -82,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" {
                         <tr>
                                 <td>Year</td>
                                 <td>
-                                        <input type='number' name='year' min='1900' max='".date("Y")"' required>
+                                        <input type='number' name='year' min='1900' max='".date("Y")."' required>
                                 </td>
                         </tr>
                         <tr>
@@ -109,9 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" {
 		</table>
 		<input type='submit' value='Format Date'>
 	</form>";
-}
-
-
 ?>
 </body>
 </html>
