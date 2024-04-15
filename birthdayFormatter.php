@@ -4,7 +4,10 @@
         <title>Birthday Formatter</title>
 </head>
 <body>
+<h1>Birthday Formatter</h1>
 <?php
+
+$show_form = true;
 
 //Input Sanitzer
 function sanitizeInput($data) {
@@ -28,6 +31,9 @@ function formatBirthday($month, $day, $year, $hour, $minute, $ampm) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	
+	$show_form = false;
+
 	//Saniter
 	$user_month = sanitizeInput($_POST["month"]);
 	$user_day = sanitizeInput($_POST["day"]);
@@ -43,18 +49,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	echo "<p>$pretty_birthday</p>";
 
 	//ISO Link
-	echo "<p><a href='?birthday=".urlencode($pretty_birthda)."'>Show date in ISO format</a></p>";
-} elseif (isset($_GET["birthday"])) {
+	echo "<p><a href='?birthday=".urlencode($pretty_birthday)."'>Show date in ISO format</a></p>";
+}
+if (isset($_GET["birthday"])) {
 	//URL Parameter
 	$user_birthday = sanitizeInput($_GET["birthday"]);
 
 	//Display
 	echo "<p>$user_birthday</p>";
-} else {
-	echo "<form method='post' action='".htmlspecialchars($_SERVER["PHP_SELF"])."'>
-		<table>
+}
+
+if($showform) {
+?>
+	<form method='post' action="<?php echo $_SERVER['PHP_SELF'];  ?>">
+		<table border="1">
 			<tr>
-				<td>Month</td>
+				<th>Month</th>
+				<th>Date</th>
+				<th>Year</th>
+				<th>Hour</th>
+				<th>Minute</th>
+				<th>AM/PM</th>
+			</tr>
+			<tr>
 				<td>
 					<select name='month' required>
 						<option value ='1'>January</option>
@@ -71,44 +88,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <option value ='12'>December</option>
 					</select>
 				</td>
-			</tr>
-			<tr>
-				<td>Day</td>
 				<td>
-					<input type='number' name='day' min='1' max='31' required>
+					<select name='day' required>
+						<?php
+						for($i = 1; $i <= 31; $i++) {
+							echo "<option value='$i'>$i</option>";
+						}
+						?>
+					</select>
 				</td>
-			</tr>
-                        <tr>
-                                <td>Year</td>
                                 <td>
-                                        <input type='number' name='year' min='1900' max='".date("Y")."' required>
+					<select name='year' required>
+						<?php 
+						$currentYear = date("Y");
+						for($i = $currentYear; $i >= 1900; $i--) {
+							echo "<option value='$i'>$i</option>";
+						}
+						?>
+					</select>
                                 </td>
-                        </tr>
-                        <tr>
-                                <td>Hour</td>
                                 <td>
-                                        <input type='number' name='hour' min='1' max='12' required>
+                                        <select name='hour' required>
+                                                <?php
+                                                for($i = 1; $i <= 12; $i++) {
+                                                        echo "<option value='$i'>$i</option>";
+                                                }
+                                                ?>
+                                        </select>
                                 </td>
-			</tr>
-                        <tr>
-                                <td>Minute</td>
                                 <td>
-                                        <input type='number' name='minute' min='0' max='59' required>
+                                        <select name='minute' required>
+                                                <?php
+						for($i = 0; $i <= 59; $i++) {
+							$minute = ($i < 10) ? "0$i" : $i;
+                                                        echo "<option value='$minute'>$minute</option>";
+                                                }
+                                                ?>
+                                        </select>
                                 </td>
-			</tr>
-                        <tr>
-                                <td>AM/PM</td>
                                 <td>
 					<select name='ampm' required>
 						<option value='AM'>AM</option>
 						<option value='PM'>PM</option>
 					</select>
                                 </td>
-                        </tr>
+			</tr>
+			<tr>
+				<td colspan="6" style="text-align: center;">
+					<input type="submit" value="Format Date">
+				</td>
+			</tr>
 		</table>
-		<input type='submit' value='Format Date'>
-	</form>";
-?>
+	</form>
+<?php } ?>
+
 </body>
 </html>
 
