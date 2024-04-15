@@ -7,8 +7,6 @@
 <h1>Birthday Formatter</h1>
 <?php
 
-$show_form = true;
-
 //Input Sanitzer
 function sanitizeInput($data) {
 	$data = trim($data);
@@ -20,21 +18,18 @@ function sanitizeInput($data) {
 //Formater
 function formatBirthday($month, $day, $year, $hour, $minute, $ampm) {
 	$time_format = "H:i";
-	if ($ampm == "PM" && $hour == 12) {
+	if ($ampm == "PM" && $hour != 12) {
 		$hour += 12;
 	} elseif ($ampm == "AM" && $hour == 12) {
 		$hour = 0;
 	}
 	$birthday_time = sprintf("%04d-%02d-%02d %02d:%02d", $year, $month, $day, $hour, $minute);
 	$date = new DateTime($birthday_time);
-	return $date->format('F j, Y h:i A');
+	return $date->format('F j, Y - h:i A');
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	
-	$show_form = false;
-
-	//Saniter
+	//Sanitizer
 	$user_month = sanitizeInput($_POST["month"]);
 	$user_day = sanitizeInput($_POST["day"]);
 	$user_year = sanitizeInput($_POST["year"]);
@@ -42,24 +37,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$user_minute = sanitizeInput($_POST["minute"]);
 	$user_ampm = sanitizeInput($_POST["ampm"]);
 
+	$date = new DateTime("$user_year-$user_month-$user_day");
+	$weekday = $date->format('l');
+
 	//Format Birthday
 	$pretty_birthday = formatBirthday($user_month, $user_day, $user_year, $user_hour, $user_minute, $user_ampm);
 
 	//Display
-	echo "<p>$pretty_birthday</p>";
+	echo "<p>$weekday $pretty_birthday</p>";
 
 	//ISO Link
-	echo "<p><a href='?birthday=".urlencode($pretty_birthday)."'>Show date in ISO format</a></p>";
-}
-if (isset($_GET["birthday"])) {
+	echo "<p><a href='?formatted_date=".urlencode($pretty_birthday)."&format=iso'>Show date in ISO format</a></p>";
+} elseif (isset($_GET["formatted_date"])) {
 	//URL Parameter
-	$user_birthday = sanitizeInput($_GET["birthday"]);
+	$user_birthday = sanitizeInput($_GET["formatted_date"]);
 
 	//Display
-	echo "<p>$user_birthday</p>";
-}
-
-if($showform) {
+	if(isset($_GET["format"]) && $_GET["format"] === "iso") {
+		$date = new DateTime($user_birthday);
+		$iso_formatted_date = $date->format('Y-m-d H:i:s');
+		echo "<p>$iso_formatted_date</p>";
+	} else {
+		echo "<p>$user_birthday</p>";
+	}
+} else {
 ?>
 	<form method='post' action="<?php echo $_SERVER['PHP_SELF'];  ?>">
 		<table border="1">
